@@ -41,13 +41,15 @@ trait BillingPlans
      *
      * @see https://developer.paypal.com/docs/api/subscriptions/v1/#plans_list
      */
-    public function listPlans($page = 1, $size = 20, $totals = true, array $fields = [])
+    public function listPlans($product_id = '', $page = 1, $size = 20, $totals = true, $product = '', array $fields = [])
     {
         $fields_list = collect($fields);
 
         $fields = ($fields_list->count() > 0) ? "&fields={$fields_list->implode(',')}" : '';
-
-        $this->apiEndPoint = "v1/billing/plans?page={$page}&page_size={$size}&total_required={$totals}{$fields}";
+        $product_id = ($product) ? "&product_id={$product}" : '';
+        $total_required = $totals ? 'true' : 'false';
+        
+        $this->apiEndPoint = "v1/billing/plans?product_id=$product_id&page={$page}&page_size={$size}&total_required={$totals}{$product_id}{$fields}";
         $this->apiUrl = collect([$this->config['api_url'], $this->apiEndPoint])->implode('/');
 
         $this->verb = 'get';
